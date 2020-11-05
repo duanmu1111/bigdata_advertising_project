@@ -1,10 +1,15 @@
 package cn.dmp.report
 
+/**
+  * 利用sparksql将查询的信息写到mysql
+  *
+  */
+
 import java.util.Properties
 
 import com.typesafe.config.ConfigFactory
+import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}
 
 object ProCityRptV2 {
 
@@ -46,14 +51,16 @@ object ProCityRptV2 {
         // 按照省市进行分组聚合---》统计分组后的各省市的日志记录条数
         val result: DataFrame = sqlc.sql("select provincename, cityname, count(*) ct from log group by provincename, cityname")
 
-        // 加载配置文件  application.conf -> application.json --> application.properties
+        //首先需要导入依赖config
+        // 加载配置文件，依次加载，  application.conf -> application.json --> application.properties
         val load = ConfigFactory.load()
         val props = new Properties()
         props.setProperty("user", load.getString("jdbc.user"))
         props.setProperty("password", load.getString("jdbc.password"))
 
-        // 将结果写入到mysql的 rpt_pc_count 表中
+        // 将结果写入到mysql的 rpt_pc_count 表中，.mode(SaveMode.Append)已追加的形式追加到表中
         result.write/*.mode(SaveMode.Append)*/.jdbc(load.getString("jdbc.url"), load.getString("jdbc.tableName"), props)
+
 
         sc.stop()
     }

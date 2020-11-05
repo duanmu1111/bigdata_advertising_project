@@ -50,10 +50,10 @@ object AreaAnalyseRptV2 {
               val rtb = RptUtils.caculateRtb(log.iseffective, log.isbilling,log.isbid, log.adorderid, log.iswin, log.winprice, log.adpayment)
               val showClick = RptUtils.caculateShowClick(log.requestmode, log.iseffective)
 
-              ((log.provincename, log.cityname), req ++ rtb ++ showClick)
+              ((log.provincename, log.cityname), req ++ rtb ++ showClick) //++ 该方法用于连接两个集合，list1++list2 。
               // (省，地市，媒体，渠道，操作系统，网络类型,...，List(9个指标数据))
           }).reduceByKey((list1, list2) => {
-            list1.zip(list2).map(t => t._1 + t._2)
+            list1.zip(list2).map(t => t._1 + t._2) //多看看，两个list对应相加
           }).map(t => t._1._1+","+t._1._2+","+t._2.mkString(","))
           .saveAsTextFile(resultOutputPath)
 
@@ -61,7 +61,7 @@ object AreaAnalyseRptV2 {
 
         // 读取parquet文件
         /*val sQLContext = new SQLContext(sc)
-        val parquetData: DataFrame = sQLContext.read.parquet(logInputPath)
+        val parquetData: DataFrame = sQLContext.read.parquet(logInputPath)   //读取后的是一个dataframe
         parquetData.map(row =>{
             // 是不是原始请求，有效请求，广告请求 List(原始请求，有效请求，广告请求)
             val reqMode = row.getAs[Int]("requestmode")

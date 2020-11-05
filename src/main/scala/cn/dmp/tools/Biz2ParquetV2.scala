@@ -46,7 +46,7 @@ object Biz2ParquetV2 {
 
         // 读取日志文件
         val dataLog: RDD[Log] = sc.textFile(logInputPath)
-          .map(line => line.split(",", -1))
+          .map(line => line.split(",", -1))   //-1切分到行尾
           .filter(_.length >= 85).map(arr => Log(arr))
 
         val dataFrame = sQLContext.createDataFrame(dataLog)

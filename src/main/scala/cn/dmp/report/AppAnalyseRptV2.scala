@@ -39,7 +39,7 @@ object AppAnalyseRptV2 {
           .filter(_.length >= 85)
           .map(Log(_)).filter(log => !log.appid.isEmpty || !log.appname.isEmpty)
           .mapPartitions(itr => {
-              val jedis = JedisPools.getJedis()
+              val jedis = JedisPools.getJedis()   //得到jedis连接
 
               val parResult = new collection.mutable.ListBuffer[(String, List[Double])]()
 
@@ -47,7 +47,7 @@ object AppAnalyseRptV2 {
               itr.foreach(log => {
                   var newAppName = log.appname
                   if (StringUtils.isEmpty(newAppName)) {
-                      newAppName = jedis.get(log.appid)
+                      newAppName = jedis.get(log.appid)     //从redis中取数据
                   }
 
                   val req = RptUtils.caculateReq(log.requestmode, log.processnode)
@@ -59,7 +59,7 @@ object AppAnalyseRptV2 {
 
               jedis.close()
               // 将listbuffer转成迭代器
-              parResult.toIterator
+              parResult.iterator
           }).reduceByKey((list1, list2) => {
             list1.zip(list2).map(t => t._1 + t._2)
         }).map(t => t._1 + "," + t._2.mkString(","))

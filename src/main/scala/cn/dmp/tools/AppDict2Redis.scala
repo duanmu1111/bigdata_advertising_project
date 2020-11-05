@@ -1,6 +1,5 @@
 package cn.dmp.tools
 
-import cn.dmp.beans.Log
 import cn.dmp.utils.JedisPools
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -39,7 +38,7 @@ object AppDict2Redis {
             (fields(4), fields(1))
         }).foreachPartition(itr => {
 
-            val jedis = JedisPools.getJedis()
+            val jedis = JedisPools.getJedis()    //数据存入到redis，需要一个redis的客户端jedis
 
             itr.foreach(t => {
                 jedis.set(t._1, t._2)

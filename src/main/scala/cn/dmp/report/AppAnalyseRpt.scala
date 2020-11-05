@@ -41,7 +41,7 @@ object AppAnalyseRpt extends App{
     val dictMap = sc.textFile(dictFilePath).map(line => {
         val fields = line.split("\t", -1)
         (fields(4), fields(1))
-    }).collect().toMap
+    }).collect().toMap   //只能在driver端进行广播，先收集到driver端
 
 
     // 将字典数据广播executor

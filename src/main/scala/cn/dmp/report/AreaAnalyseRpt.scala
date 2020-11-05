@@ -49,17 +49,21 @@ object AreaAnalyseRpt {
             """
               |select
               |provincename, cityname,
-              |sum(case when requestmode=1 and processnode >=2 then 1 else 0 end) 有效请求,
-              |sum(case when requestmode=1 and processnode =3 then 1 else 0 end) 广告请求,
-              |sum(case when iseffective=1 and isbilling=1 and isbid=1 and adorderid !=0 then 1 else 0 end) 参与竞价数,
-              |sum(case when iseffective=1 and isbilling=1 and iswin=1 then 1 else 0 end) 竞价成功数,
-              |sum(case when requestmode=2 and iseffective=1 then 1 else 0 end) 展示数,
-              |sum(case when requestmode=3 and iseffective=1 then 1 else 0 end) 点击数,
-              |sum(case when iseffective=1 and isbilling=1 and iswin=1 then 1.0*adpayment/1000 else 0 end) 广告成本,
-              |sum(case when iseffective=1 and isbilling=1 and iswin=1 then 1.0*winprice/1000 else 0 end) 广告消费
+              |sum(case when requestmode=1 and  processnode >=2 then 1 else 0 end) 有效请求,
+              |sum(case when requestmode=1 and  processnode =3 then 1 else 0 end) 广告请求,
+              |sum(case when iseffective=1 and  isbilling=1 and isbid=1 and adorderid !=0 then 1 else 0 end) 参与竞价数,
+              |sum(case when iseffective=1 and  isbilling=1 and iswin=1 then 1 else 0 end) 竞价成功数,
+              |sum(case when requestmode=2 and  iseffective=1 then 1 else 0 end) 展示数,
+              |sum(case when requestmode=3 and  iseffective=1 then 1 else 0 end) 点击数,
+              |sum(case when iseffective=1 and  isbilling=1 and iswin=1 then 1.0*adpayment/1000 else 0 end) 广告成本,
+              |sum(case when iseffective=1 and  isbilling=1 and iswin=1 then 1.0*winprice/1000 else 0 end) 广告消费
               |from log
               |group by provincename, cityname
             """.stripMargin)
+        //stripMargin怎么会事？
+        // 要在Scala中创建多行字符串，就需要了解Scala的Multiline String。
+        // 在Scala中，利用三个双引号包围多行字符串就可以实现。但上述方法存在一
+        // 个缺陷问题就在与每一行可能与我们输入的内容，带有空格之类，导致每一行的开始位置不能整洁对齐
 
 
         // 加载配置文件  application.conf -> application.json --> application.properties
